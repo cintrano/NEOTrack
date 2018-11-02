@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/subtitle_itinerary_list"
+            android:id="@+id/textView_subtitle_itinerary_list"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/abc_text_size_title_material" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_create"
+            android:id="@+id/button_create_itinerary"
+            android:onClick="createItinerary"
+            android:drawableRight="@drawable/ic_add_box_white_48dp"
+            android:background="@color/material_amber_A200"
+            android:layout_margin="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_export"
+            android:id="@+id/button_export_itinerary"
+            android:src="@drawable/ic_file_download_white_48dp"
+            android:contentDescription="@string/description"
+            android:background="@color/material_blue_500"
+            android:layout_margin="5dp"
+            android:onClick="sendMessageExportItinerary"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_import"
+            android:id="@+id/button_import_itinerary"
+            android:src="@drawable/ic_file_upload_white_48dp"
+            android:contentDescription="@string/description"
+            android:background="@color/material_green_500"
+            android:layout_margin="5dp"
+            android:onClick="sendMessageImportItinerary"/>
+    </LinearLayout>
+
+    <ExpandableListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/expandableListView_itineraries"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

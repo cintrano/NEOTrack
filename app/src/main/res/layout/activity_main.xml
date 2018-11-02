@@ -1,0 +1,57 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:weightSum="1"
+    android:orientation="vertical">
+
+
+    <Button
+        android:layout_weight="0.25"
+        android:layout_height="match_parent"
+        android:text="@string/button_send_map"
+        android:onClick="sendMessageMapTab"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_margin="@dimen/abc_button_inset_vertical_material"
+        android:elevation="@dimen/abc_action_bar_content_inset_material"
+        android:background="@color/material_green_500"
+        android:drawableTop="@drawable/ic_play_arrow_white_48dp"
+        android:textColor="@color/material_white"
+        style="?android:attr/buttonBarButtonStyle"
+        android:padding="@dimen/abc_button_inset_vertical_material"
+        android:layout_width="match_parent" />
+
+    <Button
+        android:layout_weight="0.25"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/abc_action_bar_default_height_material"
+        android:text="@string/button_itinerary"
+        android:onClick="sendMessageItinerary"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_margin="@dimen/abc_button_inset_vertical_material"
+        android:elevation="@dimen/abc_action_bar_content_inset_material"
+        android:background="@color/material_blue_500"
+        android:drawableTop="@drawable/ic_map_white_48dp"
+        android:textColor="@color/material_white"
+        style="?android:attr/buttonBarButtonStyle"
+        android:padding="@dimen/abc_button_inset_vertical_material"
+        android:layout_width="match_parent" />
+
+    <Button
+        android:layout_weight="0.25"
+        android:layout_height="match_parent"
+        android:text="@string/button_settings"
+        android:onClick="sendMessagePreferences"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_margin="@dimen/abc_button_inset_vertical_material"
+        android:elevation="@dimen/abc_action_bar_content_inset_material"
+        android:background="@color/material_amber_A200"
+        android:drawableTop="@drawable/ic_save_white_48dp"
+        android:textColor="@color/material_white"
+        style="?android:attr/buttonBarButtonStyle"
+        android:padding="@dimen/abc_button_inset_vertical_material"
+        android:layout_width="match_parent" />
+
+</LinearLayout>

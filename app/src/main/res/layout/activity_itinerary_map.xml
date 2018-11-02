@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="0.80"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_itinerary_name"
+            android:hint="@string/editText_itinerary_name_hint" />
+
+        <fragment
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/map_itinerary"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="0.20"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/points_list"
+                android:layout_above="@+id/button_save_itinerary"
+                android:layout_alignParentTop="true" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/button_save_itinerary"
+                android:text="@string/button_save"
+                android:onClick="sendMessageSaveItinerary"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_margin="@dimen/abc_button_inset_vertical_material"
+                android:elevation="@dimen/abc_action_bar_content_inset_material"
+                android:background="@color/material_blue_500"
+                android:drawableTop="@drawable/ic_save_white_48dp"
+                android:textColor="@color/material_white"
+                style="?android:attr/buttonBarButtonStyle"
+                android:padding="@dimen/abc_button_inset_vertical_material" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
