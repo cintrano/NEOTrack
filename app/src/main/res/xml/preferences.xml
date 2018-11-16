@@ -44,5 +44,13 @@
             android:key="pref_key_remove_database"
             android:summary="@string/setting_remove_database_summary"
             android:title="@string/setting_remove_database_title" />
-        </PreferenceCategory>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/setting_passive_title"
+        android:key="general_settings">
+        <CheckBoxPreference
+            android:key="pref_key_passive"
+            android:summary="@string/setting_passive_summary"
+            android:title="@string/setting_passive_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

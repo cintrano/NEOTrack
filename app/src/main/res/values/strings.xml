@@ -104,4 +104,11 @@
     <string name="confirmation_question">¿Está seguro?</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="setting_passive_title">Modo pasivo</string>
+    <string name="setting_passive_summary">Activar la recogida de información incluso al cerrar la aplicación</string>
+    <string name="server_url">http://mallba3.lcc.uma.es/neotrack/</string>
+
+    <string name="notification_stop">Aparcado</string>
+    <string name="notification_start">Liberado</string>
+    <string name="notification_ask">¿Es correcto?</string>
 </resources>

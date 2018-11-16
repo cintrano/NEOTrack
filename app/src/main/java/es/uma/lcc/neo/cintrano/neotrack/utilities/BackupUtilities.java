@@ -1,4 +1,4 @@
-package es.uma.lcc.neo.cintrano.neotrack;
+package es.uma.lcc.neo.cintrano.neotrack.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,13 +18,13 @@ import java.util.List;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.Sample;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SampleDAO;
 
-class BackupUtilities {
+public class BackupUtilities {
 
     private static final String BACKUP_DB_NAME = "backup";
     private static final String PREF_LAST_DATE_BACKUP = "backupLastDate";
     private static final String PREF_DELAY_TO_BACKUP = "pref_key_delay_backup_database";
 
-    static void makeBackup(SampleDAO db, SimpleDateFormat sdf, Context context) {
+    public static void makeBackup(SampleDAO db, SimpleDateFormat sdf, Context context) {
         Calendar startDate = getLastBackup(sdf, context);
         Log.i("DB","Last backup was in : " + sdf.format(startDate.getTime()));
         Calendar endDate = Calendar.getInstance();
@@ -136,7 +136,7 @@ class BackupUtilities {
         return cMinDate;
     }
 
-    static boolean checkBackupTime(SimpleDateFormat sdf, Context context) {
+    public static boolean checkBackupTime(SimpleDateFormat sdf, Context context) {
         Log.i("Preferences","Checking preferences");
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         int delay = Integer.parseInt(settings.getString(PREF_DELAY_TO_BACKUP, "0")); // num of days
