@@ -90,6 +90,9 @@ public class ApiRestCall extends AsyncTask<Float, Void, String> {
                     bundle.putFloat("latitude", spot.getLatitude());
                     bundle.putFloat("longitude", spot.getLongitude());
                     bundle.putString("mac", spot.getMac());
+                    bundle.putFloat("data", 10);
+                    bundle.putString("type", "test");
+                    bundle.putString("unit", "t");
 
                     resultIntent.putExtra("data", bundle);
                     PendingIntent resultPendingIntent = PendingIntent.getService(
