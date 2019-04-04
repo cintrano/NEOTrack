@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
@@ -46,7 +47,15 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.HttpUtils;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,6 +80,8 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.Sample;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SampleDAO;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput2;
+import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCall;
+import es.uma.lcc.neo.cintrano.neotrack.services.rest.HttpUrlConnectionJson;
 
 /**
  * Created by Christian Cintrano on 8/05/15.
@@ -98,7 +109,7 @@ public class TrackActivity extends AppCompatActivity {
 
     ViewPager mViewPager;
     TabsAdapter mTabsAdapter;
-    private Fragment mapFragment;
+    private MapTabFragment mapFragment;
     private ProgressDialog dialogWait;
 
     // Preferences
@@ -142,6 +153,8 @@ public class TrackActivity extends AppCompatActivity {
     private double speed;
     private double[] velocity;
 
+    private static final String ACTION_FOR_INTENT_CALLBACK = "THIS_IS_A_UNIQUE_KEY_WE_USE_TO_COMMUNICATE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Configure Interface
@@ -164,6 +177,10 @@ public class TrackActivity extends AppCompatActivity {
         oldTime = System.currentTimeMillis();
         acceleration = new double[]{0, 0, 0};
         velocity = new double[]{0, 0, 0};
+/*
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
     }
 
     private void newSessionId() {
@@ -179,6 +196,7 @@ public class TrackActivity extends AppCompatActivity {
         super.onResume();
         dbSample.open();
         configurePreference();
+
         mGPSStatusListener = new GpsStatus.Listener() {
             public void onGpsStatusChanged(int event) {
                 switch (event) {
@@ -192,8 +210,9 @@ public class TrackActivity extends AppCompatActivity {
                         // GPS_EVENT_FIRST_FIX Event is called when GPS is locked
                         Log.i("GPS", "Locked position");
                         setHiddenFragment(); // visual log
-                        ((MapTabFragment) mapFragment).setZoom(ZOOM);
-                        dialogWait.dismiss();
+                        if (((MapTabFragment) mapFragment).ready)
+                            ((MapTabFragment) mapFragment).setZoom(ZOOM);
+                            dialogWait.dismiss();
                         break;
                     case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
                         break;
@@ -271,7 +290,7 @@ public class TrackActivity extends AppCompatActivity {
         dialogWait.show();
     }
 
-    private void configureLocation() {
+    public void configureLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null &&
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -291,7 +310,7 @@ public class TrackActivity extends AppCompatActivity {
             gpsLocationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    if (!tStop)
+                    //if (!tStop)
                         myLocationChanged(location, null);
                 }
 
@@ -542,11 +561,8 @@ public class TrackActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dlg2, int which) {
                 Toast.makeText(getBaseContext(), "Enviando...", Toast.LENGTH_SHORT).show();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                ApiRestCall task = new ApiRestCall(getApplicationContext());
+                task.execute(new Float[]{1f,1f,1f,1f,1f,1f,1f,1f});
                 Toast.makeText(getBaseContext(), "Datos enviados correctamente", Toast.LENGTH_SHORT).show();
 
             }
@@ -933,7 +949,9 @@ public class TrackActivity extends AppCompatActivity {
             if(fragment != null) {
 //                Fragment trackFragment;
                 if (fragment instanceof MapTabFragment) {//!fragment.isVisible())
-                    mapFragment = fragment;
+                    Log.i("Activity","Adding map Fragment");
+                    mapFragment = (MapTabFragment) fragment;
+                    //((MapTabFragment) mapFragment).padre = this;
 //                    ((MapTabFragment) mapFragment).setZoom(10.0f);
                 }
 //                else if (fragment instanceof TrackFragment)//!fragment.isVisible())
