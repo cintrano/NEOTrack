@@ -15,7 +15,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
@@ -47,15 +46,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.HttpUtils;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -81,7 +72,6 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.SampleDAO;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput2;
 import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCall;
-import es.uma.lcc.neo.cintrano.neotrack.services.rest.HttpUrlConnectionJson;
 
 /**
  * Created by Christian Cintrano on 8/05/15.
@@ -153,8 +143,6 @@ public class TrackActivity extends AppCompatActivity {
     private double speed;
     private double[] velocity;
 
-    private static final String ACTION_FOR_INTENT_CALLBACK = "THIS_IS_A_UNIQUE_KEY_WE_USE_TO_COMMUNICATE";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Configure Interface
@@ -177,10 +165,6 @@ public class TrackActivity extends AppCompatActivity {
         oldTime = System.currentTimeMillis();
         acceleration = new double[]{0, 0, 0};
         velocity = new double[]{0, 0, 0};
-/*
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
     }
 
     private void newSessionId() {
@@ -210,8 +194,8 @@ public class TrackActivity extends AppCompatActivity {
                         // GPS_EVENT_FIRST_FIX Event is called when GPS is locked
                         Log.i("GPS", "Locked position");
                         setHiddenFragment(); // visual log
-                        if (((MapTabFragment) mapFragment).ready)
-                            ((MapTabFragment) mapFragment).setZoom(ZOOM);
+                        if (mapFragment.ready)
+                            mapFragment.setZoom(ZOOM);
                             dialogWait.dismiss();
                         break;
                     case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
@@ -296,16 +280,15 @@ public class TrackActivity extends AppCompatActivity {
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
             // Register GPSStatus listener for events
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                 return;
-            }
             locationManager.addGpsStatusListener(mGPSStatusListener);
             gpsLocationListener = new LocationListener() {
                 @Override
@@ -521,15 +504,13 @@ public class TrackActivity extends AppCompatActivity {
 
     public void restartSpeech() {
         speakerOut.speak("Parada", TextToSpeech.QUEUE_ADD, null);
-//        while (speakerOut.isSpeaking()) {}
         sr.startListening(RecognizerIntent.getVoiceDetailsIntent(getApplicationContext()));
     }
 
     public void displayItineraries(View view) {
         ItineraryDAO db = new ItineraryDAO(TrackActivity.this);
         db.open();
-        ArrayList<Itinerary> itineraryList = new ArrayList<>();
-        itineraryList.addAll(db.getAll());
+        ArrayList<Itinerary> itineraryList = new ArrayList<>(db.getAll());
         db.close();
 
         List<String> list = new ArrayList<>();
@@ -546,7 +527,7 @@ public class TrackActivity extends AppCompatActivity {
     public void controlTracking(View view) {
         runningTracking = !runningTracking;
         Log.i(TAG, "capturing points: " + runningTracking);
-//        Display stuff (change play icon to pause icon)
+        // TODO: Display stuff (change play icon to pause icon)
     }
 
     public void stopTracking(View view) {
@@ -915,15 +896,13 @@ public class TrackActivity extends AppCompatActivity {
     public void myLocationChanged(Location location, String cause) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         setHiddenFragment(); // visual log
-        ((MapTabFragment) mapFragment).setCamera(latLng);
+        mapFragment.setCamera(latLng);
         // Print marker car position
-        ((MapTabFragment) mapFragment)
-                .addMarker(MapTabFragment.Marker_Type.POSITION, null, location);
+        mapFragment.addMarker(MapTabFragment.Marker_Type.POSITION, null, location);
 
         if (runningTracking) {
             // Print marker track point
-            ((MapTabFragment) mapFragment)
-                    .addMarker(MapTabFragment.Marker_Type.GPS, null, location);
+            mapFragment.addMarker(MapTabFragment.Marker_Type.GPS, null, location);
             new SavePointTask().execute(new SavePointInput(visitItinerary, location, cause));
         }
     }
@@ -947,12 +926,9 @@ public class TrackActivity extends AppCompatActivity {
         Log.i("Activity","Num of fragments: " + fragments.size());
         for(Fragment fragment : fragments){
             if(fragment != null) {
-//                Fragment trackFragment;
                 if (fragment instanceof MapTabFragment) {//!fragment.isVisible())
                     Log.i("Activity","Adding map Fragment");
                     mapFragment = (MapTabFragment) fragment;
-                    //((MapTabFragment) mapFragment).padre = this;
-//                    ((MapTabFragment) mapFragment).setZoom(10.0f);
                 }
 //                else if (fragment instanceof TrackFragment)//!fragment.isVisible())
 //                    trackFragment = fragment;
@@ -1025,7 +1001,7 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     private void displayItinerarySelected(Itinerary itinerary) {
-        ((MapTabFragment) mapFragment).clearItineraryMarkers();
+        mapFragment.clearItineraryMarkers();
         if(speakerOutReady)
             speakerOut.speak(getResources().getString(R.string.speak_out_itinerary_added) +
                     itinerary.getPoints().size() + " puntos", TextToSpeech.QUEUE_ADD, null);
@@ -1034,7 +1010,7 @@ public class TrackActivity extends AppCompatActivity {
             Location location = new Location("Test");
             location.setLatitude(((Point) point).getLatitude());
             location.setLongitude(((Point) point).getLongitude());
-            ((MapTabFragment) mapFragment).addMarker(MapTabFragment.Marker_Type.ITINERARY,
+            mapFragment.addMarker(MapTabFragment.Marker_Type.ITINERARY,
                     ((Point) point).getAddress(), location);
         }
         visitItinerary = itinerary;

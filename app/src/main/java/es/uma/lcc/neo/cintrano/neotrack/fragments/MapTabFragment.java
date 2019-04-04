@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -50,7 +49,6 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.Sample;
 public class MapTabFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
     private static final String[] stopChoices = {"Atasco", "Obras", "Accidente", "Otros", "Reanudar"};
-    public TrackActivity padre;
 
     public enum Marker_Type {GPS, STOP, POSITION, ITINERARY}
 
@@ -125,10 +123,8 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.i("TabsAdapter", "--- onMapReady");
         map = googleMap;
         ready = true;
-        //padre.configureLocation();
     }
 
     public void displayStopChoices() {
