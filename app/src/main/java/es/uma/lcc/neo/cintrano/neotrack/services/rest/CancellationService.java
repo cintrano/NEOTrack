@@ -42,8 +42,8 @@ public class CancellationService extends IntentService {
     private Spot getSpot(Bundle bundle) {
         Spot spot = new Spot();
         spot.setId(bundle.getInt("ID"));
-        spot.setLatitude(bundle.getFloat("latitude"));
-        spot.setLongitude(bundle.getFloat("longitude"));
+        spot.setLatitude((double) bundle.getFloat("latitude"));
+        spot.setLongitude((double) bundle.getFloat("longitude"));
         spot.setMac(bundle.getString("mac"));
         return spot;
     }

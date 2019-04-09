@@ -16,6 +16,7 @@ import android.util.Log;
 
 import es.uma.lcc.neo.cintrano.neotrack.MainActivity;
 import es.uma.lcc.neo.cintrano.neotrack.R;
+import es.uma.lcc.neo.cintrano.neotrack.persistence.Sample;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.Spot;
 
 
@@ -23,7 +24,7 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.Spot;
  * Created by Christian Cintrano on 23/11/16.
  *
  */
-public class ApiRestCall extends AsyncTask<Float, Void, String> {
+public class ApiRestCallBash extends AsyncTask<Sample, Void, String> {
     private String BASIC_URL;
     //private final static String BASIC_URL =
     //        "https://ec2-54-167-56-75.compute-1.amazonaws.com:8443/iBlue-Service/spot/set";
@@ -35,7 +36,7 @@ public class ApiRestCall extends AsyncTask<Float, Void, String> {
     private static final String PREFERENCE_LATITUDE = "preference_spot_lat";
     private static final String PREFERENCE_LONGITUDE = "preference_spot_lon";
 
-    public ApiRestCall(Context context) {
+    public ApiRestCallBash(Context context) {
         super();
         this.context = context;
         pref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -43,29 +44,26 @@ public class ApiRestCall extends AsyncTask<Float, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Float... params) {
+    protected String doInBackground(Sample... params) {
         // Set the status for the previous slot created
-        spot.setStatus(params[0].intValue());
-
-        if (params[1] != 0.0f && params[2] != 0.0f) {
-            spot.setLatitude(Double.valueOf(params[1]));
-            spot.setLongitude(Double.valueOf(params[2]));
+        //spot.setStatus(params[0].intValue());
+        for (Sample s :params) {
+            spot.setLatitude(s.getLatitude());
+            spot.setLongitude(s.getLongitude());
 
             spot.setUnit("u");
             spot.setData(0);
-            spot.setType("normal");
+            spot.setType(s.getStopType());
             spot.setDevice(spot.getMac());
 
             SharedPreferences.Editor editor = pref.edit();
             editor.putFloat(PREFERENCE_LATITUDE, (float) spot.getLatitude());
             editor.putFloat(PREFERENCE_LONGITUDE, (float) spot.getLongitude());
             editor.apply();
-        } else {
-            spot.setLatitude((double) pref.getFloat(PREFERENCE_LATITUDE, 0.0f));
-            spot.setLongitude((double) pref.getFloat(PREFERENCE_LONGITUDE, 0.0f));
+            requestWebService(BASIC_URL, "POST", spot);
         }
 
-        return requestWebService(BASIC_URL, "POST", spot);
+        return "End send data";
     }
 
     @Override
@@ -96,7 +94,7 @@ public class ApiRestCall extends AsyncTask<Float, Void, String> {
                     bundle.putDouble("lon", spot.getLongitude());
                     bundle.putString("unit", "u");
                     bundle.putFloat("data", 0);
-                    bundle.putString("type", "normal");
+                    bundle.putString("type", spot.getType());
                     bundle.putString("device", spot.getMac());
 
                     resultIntent.putExtra("data", bundle);

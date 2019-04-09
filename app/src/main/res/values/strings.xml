@@ -106,7 +106,7 @@
     <string name="no">No</string>
     <string name="setting_passive_title">Modo pasivo</string>
     <string name="setting_passive_summary">Activar la recogida de información incluso al cerrar la aplicación</string>
-    <string name="server_url">http://mallba3.lcc.uma.es:5000/GetAllItems/samples</string>
+    <string name="server_url">http://mallba3.lcc.uma.es:5000/samples/new</string>
 
     <string name="notification_stop">Aparcado</string>
     <string name="notification_start">Liberado</string>

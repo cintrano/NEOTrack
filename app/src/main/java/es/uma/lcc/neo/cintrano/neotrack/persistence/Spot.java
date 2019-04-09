@@ -5,31 +5,32 @@ public class Spot {
 
 	private int id;
 
-	private float latitude;
-	private float longitude;
+	private double latitude;
+	private double longitude;
 	private String mac;
 	private int status;
     private double data;
     private String type;
     private String unit;
+    private String device;
 
 
     public Spot() {
 	}
 
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(Float latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(Float longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 
@@ -81,13 +82,25 @@ public class Spot {
         this.unit = unit;
     }
 
-	@Override
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    @Override
 	public String toString() {
 		return "{" +
 				"\"id\":\"" + this.id + "\"," +
-				"\"latitude\":\"" + this.latitude + "\"," +
-				"\"longitude\":\"" + this.longitude + "\"," +
-				"\"mac\":\"" + this.mac + "\"," +
+				"\"lat\":\"" + this.latitude + "\"," +
+				"\"lon\":\"" + this.longitude + "\"," +
+                "\"mac\":\"" + this.mac + "\"," +
+                "\"data\":\"" + this.data + "\"," +
+                "\"type\":\"" + this.type + "\"," +
+                "\"unit\":\"" + this.unit + "\"," +
+                "\"device\":\"" + this.device + "\"," +
 				"\"status\":\"" + this.status + "\"" +
                 "}";
 	}

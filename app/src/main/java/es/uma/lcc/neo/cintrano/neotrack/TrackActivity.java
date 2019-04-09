@@ -72,6 +72,7 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.SampleDAO;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput2;
 import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCall;
+import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCallBash;
 
 /**
  * Created by Christian Cintrano on 8/05/15.
@@ -533,7 +534,7 @@ public class TrackActivity extends AppCompatActivity {
     public void stopTracking(View view) {
         runningTracking = false;
         Log.i(TAG, "Stop capturing points");
-
+        final String old_session_id = SESSION_ID;
         // Display summary
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.tracking_summary)
@@ -542,8 +543,41 @@ public class TrackActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dlg2, int which) {
                 Toast.makeText(getBaseContext(), "Enviando...", Toast.LENGTH_SHORT).show();
-                ApiRestCall task = new ApiRestCall(getApplicationContext());
-                task.execute(new Float[]{1f,1f,1f,1f,1f,1f,1f,1f});
+                //ApiRestCall task = new ApiRestCall(getApplicationContext());
+                ApiRestCallBash task = new ApiRestCallBash(getApplicationContext());
+
+                List<Sample> results = dbSample.get(old_session_id);
+                Log.i(TAG, "recover " + results.size() + " elements");
+                if (results.size() > 0) {
+                    Sample[] data = new Sample[results.size()];
+                    data = results.toArray(data);
+                    task.execute(data);
+                }
+//                    // time
+//                    Date dateStart = null;
+//                    Date dateEnd = null;
+//                    try {
+//                        dateStart = DATE_FORMATTER_SAVE.parse(results.get(0).getDate());
+//                        dateEnd = DATE_FORMATTER_SAVE.parse(results.get(results.size() - 1).getDate());
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                    // distance
+//                    Location lastLoc = new Location("");
+//                    lastLoc.setLatitude(results.get(0).getLatitude());
+//                    lastLoc.setLongitude(results.get(0).getLongitude());
+//                    for (Sample dc : results) {
+//                        Location newLoc = new Location("");
+//                        newLoc.setLatitude(dc.getLatitude());
+//                        newLoc.setLongitude(dc.getLongitude());
+//                        lastLoc = newLoc;
+//                        // number of stops
+//                        // dc.getStopType()
+//                        task.execute(new Float[]{1f,(float) dc.getLatitude(), (float) dc.getLongitude(),1f,1f,1f,1f,1f});
+//                    }
+//                }
+
+                //task.execute(new Float[]{1f,1f,1f,1f,1f,1f,1f,1f});
                 Toast.makeText(getBaseContext(), "Datos enviados correctamente", Toast.LENGTH_SHORT).show();
 
             }
