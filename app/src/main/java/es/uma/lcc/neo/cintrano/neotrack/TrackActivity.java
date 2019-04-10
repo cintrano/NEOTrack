@@ -542,35 +542,39 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     public void stopTracking(View view) {
+        // UI changes
         runningTracking = false;
+        Button button = findViewById(R.id.b_start_tracking);
+        Drawable top = getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp);
+        button.setCompoundDrawablesWithIntrinsicBounds(null, top , null, null);
+
         Log.i(TAG, "Stop capturing points");
         final String old_session_id = SESSION_ID;
-        // Display summary
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.tracking_summary)
-                .setMessage(printSummaryTracking(SESSION_ID));
-        builder.setNeutralButton("Enviar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dlg2, int which) {
-                //ApiRestCall task = new ApiRestCall(getApplicationContext());
-                ApiRestCallBash task = new ApiRestCallBash(getApplicationContext());
 
-                List<Sample> results = dbSample.get(old_session_id);
-                Log.i(TAG, "recover " + results.size() + " elements");
-                if (results.size() > 0) {
+        List<Sample> results = dbSample.get(old_session_id);
+        Log.i(TAG, "recover " + results.size() + " elements");
+        if (results.size() > 0) {
+            // Display summary
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.tracking_summary)
+                    .setMessage(printSummaryTracking(SESSION_ID));
+            builder.setNeutralButton("Enviar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dlg2, int which) {
+                    ApiRestCallBash task = new ApiRestCallBash(getApplicationContext());
+                    List<Sample> results = dbSample.get(old_session_id);
                     Toast.makeText(getBaseContext(), "Enviando...", Toast.LENGTH_SHORT).show();
                     Sample[] data = new Sample[results.size()];
                     data = results.toArray(data);
                     task.execute(data);
                     Toast.makeText(getBaseContext(), "Datos enviados correctamente", Toast.LENGTH_SHORT).show();
-                } else  {
-                    Toast.makeText(getBaseContext(), "No hay datos para enviar", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else  {
+            Toast.makeText(getBaseContext(), "No hay datos para enviar", Toast.LENGTH_SHORT).show();
+        }
         // Reset sessionId
         newSessionId();
     }
