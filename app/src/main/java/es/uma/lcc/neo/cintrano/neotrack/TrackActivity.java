@@ -23,7 +23,6 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -46,7 +45,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -74,7 +72,6 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.Sample;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SampleDAO;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput;
 import es.uma.lcc.neo.cintrano.neotrack.persistence.SavePointInput2;
-import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCall;
 import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCallBash;
 
 /**
@@ -85,8 +82,6 @@ import es.uma.lcc.neo.cintrano.neotrack.services.rest.ApiRestCallBash;
 public class TrackActivity extends AppCompatActivity {
 
     private static final String TAG = "TrackActivity";
-
-    private static final int ZOOM = 20;
 
     private AlertDialog saveFileDialog;
     private DatePickerDialog dateInitDialog;
@@ -199,7 +194,6 @@ public class TrackActivity extends AppCompatActivity {
                         Log.i("GPS", "Locked position");
                         setHiddenFragment(); // visual log
                         if (mapFragment.ready)
-                            mapFragment.setZoom(ZOOM);
                             dialogWait.dismiss();
                         break;
                     case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
@@ -247,13 +241,13 @@ public class TrackActivity extends AppCompatActivity {
         sr.destroy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_map, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu items for use in the action bar
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_map, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -918,17 +912,19 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     public void myLocationChanged(Location location, String cause) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        setHiddenFragment(); // visual log
-        mapFragment.setCamera(latLng);
-        // Print marker car position
-        mapFragment.addMarker(MapTabFragment.Marker_Type.POSITION, null, location);
+        //if (mapFragment.ready) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            setHiddenFragment(); // visual log
+            mapFragment.setCamera(latLng);
+            // Print marker car position
+            mapFragment.addMarker(MapTabFragment.Marker_Type.POSITION, null, location);
 
-        if (runningTracking) {
-            // Print marker track point
-            mapFragment.addMarker(MapTabFragment.Marker_Type.GPS, null, location);
-            new SavePointTask().execute(new SavePointInput(visitItinerary, location, cause));
-        }
+            if (runningTracking) {
+                // Print marker track point
+                mapFragment.addMarker(MapTabFragment.Marker_Type.GPS, null, location);
+                new SavePointTask().execute(new SavePointInput(visitItinerary, location, cause));
+            }
+        //}
     }
 
     /**
