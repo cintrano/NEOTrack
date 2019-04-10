@@ -36,8 +36,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -348,8 +346,8 @@ public class TrackActivity extends AppCompatActivity {
             mTabsAdapter = new TabsAdapter(this, mViewPager);
             mTabsAdapter.addTab(bar.newTab().setText(getResources().getString(R.string.map)),
                     MapTabFragment.class, null);
-            mTabsAdapter.addTab(bar.newTab().setText(getResources().getString(R.string.data)),
-                    TrackFragment.class, null);
+//            mTabsAdapter.addTab(bar.newTab().setText(getResources().getString(R.string.data)),
+//                    TrackFragment.class, null);
 
             if (savedInstanceState != null) {
                 bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
