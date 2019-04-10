@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -22,6 +23,7 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -44,6 +46,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -526,9 +529,16 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     public void controlTracking(View view) {
+        Button button = (Button) view;
         runningTracking = !runningTracking;
+        Drawable top;
+        if(runningTracking){
+            top = getResources().getDrawable(R.drawable.baseline_pause_white_48);
+        } else {
+            top = getResources().getDrawable(R.drawable.ic_play_arrow_white_48dp);
+        }
+        button.setCompoundDrawablesWithIntrinsicBounds(null, top , null, null);
         Log.i(TAG, "capturing points: " + runningTracking);
-        // TODO: Display stuff (change play icon to pause icon)
     }
 
     public void stopTracking(View view) {
@@ -542,44 +552,20 @@ public class TrackActivity extends AppCompatActivity {
         builder.setNeutralButton("Enviar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dlg2, int which) {
-                Toast.makeText(getBaseContext(), "Enviando...", Toast.LENGTH_SHORT).show();
                 //ApiRestCall task = new ApiRestCall(getApplicationContext());
                 ApiRestCallBash task = new ApiRestCallBash(getApplicationContext());
 
                 List<Sample> results = dbSample.get(old_session_id);
                 Log.i(TAG, "recover " + results.size() + " elements");
                 if (results.size() > 0) {
+                    Toast.makeText(getBaseContext(), "Enviando...", Toast.LENGTH_SHORT).show();
                     Sample[] data = new Sample[results.size()];
                     data = results.toArray(data);
                     task.execute(data);
+                    Toast.makeText(getBaseContext(), "Datos enviados correctamente", Toast.LENGTH_SHORT).show();
+                } else  {
+                    Toast.makeText(getBaseContext(), "No hay datos para enviar", Toast.LENGTH_SHORT).show();
                 }
-//                    // time
-//                    Date dateStart = null;
-//                    Date dateEnd = null;
-//                    try {
-//                        dateStart = DATE_FORMATTER_SAVE.parse(results.get(0).getDate());
-//                        dateEnd = DATE_FORMATTER_SAVE.parse(results.get(results.size() - 1).getDate());
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                    // distance
-//                    Location lastLoc = new Location("");
-//                    lastLoc.setLatitude(results.get(0).getLatitude());
-//                    lastLoc.setLongitude(results.get(0).getLongitude());
-//                    for (Sample dc : results) {
-//                        Location newLoc = new Location("");
-//                        newLoc.setLatitude(dc.getLatitude());
-//                        newLoc.setLongitude(dc.getLongitude());
-//                        lastLoc = newLoc;
-//                        // number of stops
-//                        // dc.getStopType()
-//                        task.execute(new Float[]{1f,(float) dc.getLatitude(), (float) dc.getLongitude(),1f,1f,1f,1f,1f});
-//                    }
-//                }
-
-                //task.execute(new Float[]{1f,1f,1f,1f,1f,1f,1f,1f});
-                Toast.makeText(getBaseContext(), "Datos enviados correctamente", Toast.LENGTH_SHORT).show();
-
             }
         });
         AlertDialog dialog = builder.create();
