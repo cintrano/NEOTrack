@@ -49,6 +49,7 @@ import es.uma.lcc.neo.cintrano.neotrack.persistence.Sample;
 public class MapTabFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
     private static final String[] stopChoices = {"Atasco", "Obras", "Accidente", "Otros", "Reanudar"};
+    private static final int ZOOM = 20;
 
     public enum Marker_Type {GPS, STOP, POSITION, ITINERARY}
 
@@ -124,6 +125,7 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        setZoom(ZOOM);
         ready = true;
     }
 
