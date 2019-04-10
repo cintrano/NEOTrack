@@ -912,7 +912,7 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     public void myLocationChanged(Location location, String cause) {
-        //if (mapFragment.ready) {
+        if (mapFragment.ready) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             setHiddenFragment(); // visual log
             mapFragment.setCamera(latLng);
@@ -924,7 +924,7 @@ public class TrackActivity extends AppCompatActivity {
                 mapFragment.addMarker(MapTabFragment.Marker_Type.GPS, null, location);
                 new SavePointTask().execute(new SavePointInput(visitItinerary, location, cause));
             }
-        //}
+        }
     }
 
     /**
