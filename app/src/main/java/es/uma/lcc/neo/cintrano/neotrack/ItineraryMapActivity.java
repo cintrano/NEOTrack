@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -62,16 +63,19 @@ public class ItineraryMapActivity extends FragmentActivity implements OnMapReady
         configureDialogWait();
 
         points = new ArrayList<>();
-        ((MapFragment) getFragmentManager().findFragmentById(R.id.map_itinerary)).getMapAsync(this);
+        //((MapFragment) getFragmentManager().findFragmentById(R.id.map_itinerary)).getMapAsync(this);
         //map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map_itinerary)).getMap();
+        if (map == null) {
+            SupportMapFragment mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_itinerary);
+            mapFrag.getMapAsync(this);
+        }
 
-        configureMapActions();
         configureListView();
 
         Bundle newItinerary = getIntent().getParcelableExtra(EXTRA_TAB);
-        //if(newItinerary != null) {
-        loadEditableData((Itinerary) Objects.requireNonNull(newItinerary.getParcelable(EXTRA_TAB)));
-        //}
+        if(newItinerary != null) {
+            loadEditableData((Itinerary) Objects.requireNonNull(newItinerary.getParcelable(EXTRA_TAB)));
+        }
 
         geocoder = new Geocoder(this, Locale.getDefault());
     }
@@ -112,7 +116,8 @@ public class ItineraryMapActivity extends FragmentActivity implements OnMapReady
 //        });
 
         CameraUpdate center= CameraUpdateFactory.newLatLng(
-                new LatLng(36.7176109,-4.42346));
+                //new LatLng(36.7176109,-4.42346));
+                new LatLng(36.720957,-4.4209296));
         CameraUpdate zoom= CameraUpdateFactory.zoomTo(ZOOM);
         map.moveCamera(center);
         map.animateCamera(zoom);
@@ -156,6 +161,7 @@ public class ItineraryMapActivity extends FragmentActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         dialogWait.dismiss();
         map = googleMap;
+        configureMapActions();
     }
 
     private void configureDialogWait() {
