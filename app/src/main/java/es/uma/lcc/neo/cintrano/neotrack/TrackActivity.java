@@ -14,6 +14,7 @@ import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
@@ -140,6 +141,13 @@ public class TrackActivity extends AppCompatActivity {
     private double speed;
     private double[] velocity;
 
+    private static final String LOG_TAG = "AudioRecordTest";
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private static String fileName = null;
+
+    private MediaRecorder recorder = null;
+    private boolean mStartRecording = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Configure Interface
@@ -162,6 +170,11 @@ public class TrackActivity extends AppCompatActivity {
         oldTime = System.currentTimeMillis();
         acceleration = new double[]{0, 0, 0};
         velocity = new double[]{0, 0, 0};
+
+
+        // Record to the external cache directory for visibility
+        fileName = getExternalCacheDir().getAbsolutePath();
+        //fileName += "/audiorecordtest.3gp";
     }
 
     private void newSessionId() {
@@ -228,6 +241,15 @@ public class TrackActivity extends AppCompatActivity {
 
         sr.stopListening();
         mSensorManager.unregisterListener(mSensorListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (recorder != null) {
+            recorder.release();
+            recorder = null;
+        }
     }
 
     @Override
@@ -952,6 +974,50 @@ public class TrackActivity extends AppCompatActivity {
 //                    trackFragment = fragment;
             }
         }
+    }
+
+    public void recordAudio(View view) {
+        onRecord(mStartRecording);
+        if (mStartRecording) {
+            Toast.makeText(TrackActivity.this, "STOP Grabación", Toast.LENGTH_SHORT).show();
+            //setText("Stop recording");
+        } else {
+            Toast.makeText(TrackActivity.this, "START Grabación", Toast.LENGTH_SHORT).show();
+            //setText("Start recording");
+        }
+        mStartRecording = !mStartRecording;
+    }
+
+    private void onRecord(boolean start) {
+        if (start) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
+
+    private void startRecording() {
+        Log.i("Recording", "Iniciando grabación");
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setOutputFile(fileName + "/audiorecordtest"+ (System.currentTimeMillis()/1000) + ".3gp");
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            recorder.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        recorder.start();
+    }
+
+    private void stopRecording() {
+        Log.i("Recording", "Parando grabación");
+        recorder.stop();
+        recorder.release();
+        recorder = null;
     }
 
     /**

@@ -61,5 +61,16 @@
             android:drawableTop="@mipmap/ic_add_white"
             android:textColor="@color/material_white"
             android:background="#FFD740"/>
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_weight="0.25"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/record_button"
+            android:drawableTop="@drawable/baseline_mic_white_48"
+            android:textColor="@color/material_white"
+            android:background="#009688"
+            android:onClick="recordAudio"/>
     </LinearLayout>
 </RelativeLayout>
