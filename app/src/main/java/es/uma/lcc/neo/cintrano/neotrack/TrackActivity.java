@@ -204,7 +204,7 @@ public class TrackActivity extends AppCompatActivity {
                         // GPS_EVENT_FIRST_FIX Event is called when GPS is locked
                         Log.i("GPS", "Locked position");
                         setHiddenFragment(); // visual log
-                        if (mapFragment.ready)
+                        if (mapFragment != null && mapFragment.ready)
                             dialogWait.dismiss();
                         break;
                     case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
@@ -312,6 +312,19 @@ public class TrackActivity extends AppCompatActivity {
                 @Override
                 public void onLocationChanged(Location location) {
                     //if (!tStop)
+
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                            intervalTimeGPS, minDistance, gpsLocationListener);
                         myLocationChanged(location, null);
                 }
 
@@ -344,8 +357,14 @@ public class TrackActivity extends AppCompatActivity {
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    0, 0, gpsLocationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    intervalTimeGPS, minDistance, gpsLocationListener);
+                    0, 0, gpsLocationListener);
+            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER,
+                    0, 0, gpsLocationListener);
+
+            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         } else {
             Toast.makeText(this, getResources().getString(R.string.gps_disabled),
                     Toast.LENGTH_SHORT).show();
@@ -932,7 +951,7 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     public void myLocationChanged(Location location, String cause) {
-        if (mapFragment.ready) {
+        if (mapFragment != null && mapFragment.ready) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             setHiddenFragment(); // visual log
             mapFragment.setCamera(latLng);

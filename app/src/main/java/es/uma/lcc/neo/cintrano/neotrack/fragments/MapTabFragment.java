@@ -80,14 +80,9 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
         }
 
         Button bStop = view.findViewById(R.id.stop_button);
-//        ImageButton bStopSpeak = (ImageButton) view.findViewById(R.id.stop_button_speak);
-
-//        Button bStart = (Button) view.findViewById(R.id.start_button);
-//        Button bEnd = (Button) view.findViewById(R.id.end_button);
         bStop.setOnClickListener(this);
-//        bStopSpeak.setOnClickListener(this);
-//        bStart.setOnClickListener(this);
-//        bEnd.setOnClickListener(this);
+        Button bChangeMap = view.findViewById(R.id.change_map_button);
+        bChangeMap.setOnClickListener(this);
 
         itineraryMarkers = new ArrayList<>();
 
@@ -127,6 +122,7 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
         map = googleMap;
         setZoom(ZOOM);
         ready = true;
+        map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
     }
 
     public void displayStopChoices() {
@@ -213,6 +209,14 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
         map.animateCamera(cameraUpdate);
     }
 
+    public void changeMap() {
+        if (map.getMapType() == GoogleMap.MAP_TYPE_SATELLITE) {
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        } else {
+            map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        }
+    }
+
     /**
      * Simple method to add markers to the map
      * @param title text of the marker
@@ -261,6 +265,10 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
             case R.id.stop_button:
                 Log.i("Click", "stop_button");
                 displayStopChoices();
+                break;
+            case R.id.change_map_button:
+                Log.i("Click", "button_change_map");
+                changeMap();
                 break;
         }
     }
