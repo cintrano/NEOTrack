@@ -3,11 +3,13 @@ package es.uma.lcc.neo.cintrano.neotrack.fragments;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -248,9 +250,12 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
                         .icon(BitmapDescriptorFactory
                                 .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 ));
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                String syncConnPref = pref.getString("pref_key_it_radius", "10");
+                int radius = Integer.parseInt(syncConnPref);
                 Circle circle = map.addCircle(new CircleOptions()
                         .center(coordinates)
-                        .radius(20)
+                        .radius(radius)
                         .strokeColor(Color.argb(100,0,0,255))
                         .fillColor(Color.argb(50,0,0,255)));
                 break;

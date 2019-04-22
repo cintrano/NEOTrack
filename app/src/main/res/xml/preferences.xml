@@ -32,6 +32,16 @@
             android:inputType="number"/>
     </PreferenceCategory>
     <PreferenceCategory
+        android:title="@string/setting_itinerary_title"
+        android:key="general_settings">
+        <EditTextPreference
+            android:key="pref_key_it_radius"
+            android:summary="@string/setting_it_radius_summary"
+            android:title="@string/setting_it_radius_title"
+            android:defaultValue="10"
+            android:inputType="number"/>
+    </PreferenceCategory>
+    <PreferenceCategory
         android:title="@string/setting_database_title"
         android:key="general_settings">
         <EditTextPreference

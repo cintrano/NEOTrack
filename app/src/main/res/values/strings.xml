@@ -111,4 +111,7 @@
     <string name="notification_stop">Aparcado</string>
     <string name="notification_start">Liberado</string>
     <string name="notification_ask">¿Es correcto?</string>
+    <string name="setting_itinerary_title">Itinerarios</string>
+    <string name="setting_it_radius_summary">Radio de cada punto de intenerés en metros</string>
+    <string name="setting_it_radius_title">Radio</string>
 </resources>
