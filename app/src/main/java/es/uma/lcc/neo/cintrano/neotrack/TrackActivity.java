@@ -48,6 +48,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -958,7 +959,7 @@ public class TrackActivity extends AppCompatActivity {
             mapFragment.setCamera(latLng);
             // Print marker car position
             mapFragment.addMarker(MapTabFragment.Marker_Type.POSITION, null, location);
-
+            checkRecordAudio(latLng);
             if (runningTracking) {
                 // Print marker track point
                 mapFragment.addMarker(MapTabFragment.Marker_Type.GPS, null, location);
@@ -967,6 +968,40 @@ public class TrackActivity extends AppCompatActivity {
         }
     }
 
+    private void checkRecordAudio(LatLng latLng) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        String syncConnPref = pref.getString("pref_key_it_radius", "10");
+        int radius = Integer.parseInt(syncConnPref);
+
+        if (near(mapFragment.itineraryMarkers, latLng, radius) && !mStartRecording) {
+            recordAudio(null);
+        } else if (!near(mapFragment.itineraryMarkers, latLng, radius) && mStartRecording) {
+            recordAudio(null);
+        }
+    }
+
+    private boolean near(List<Marker> itineraryMarkers, LatLng latLng, int dist) {
+        Location locationA = new Location("point A");
+        locationA.setLatitude(latLng.latitude);
+        locationA.setLongitude(latLng.longitude);
+        for (Marker m : itineraryMarkers) {
+            //if(euclideanDistance(m.getPosition(), latLng) < dist) {
+            Location locationB = new Location("point B");
+            locationB.setLatitude(m.getPosition().latitude);
+            locationB.setLongitude(m.getPosition().longitude);
+            if (locationA.distanceTo(locationB) < dist) {
+                return true;
+            }
+        }
+        return false;
+    }
+/*
+    private double euclideanDistance(LatLng o, LatLng d) {
+        double a = (o.latitude - d.latitude) * (o.latitude - d.latitude);
+        double b = (o.longitude - d.longitude) * (o.longitude - d.longitude);
+        return Math.sqrt((a * a) + (b * b));
+    }
+*/
     /**
      * Method to save data from external fragments
      * @param sample data

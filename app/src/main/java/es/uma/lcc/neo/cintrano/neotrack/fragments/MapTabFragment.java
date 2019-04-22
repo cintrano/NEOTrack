@@ -65,7 +65,7 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
     public GoogleMap map; // Might be null if Google Play services APK is not available.
 
     private SimpleDateFormat sdf;
-    private List<Marker> itineraryMarkers;
+    public List<Marker> itineraryMarkers;
 
     public boolean ready = false;
 
