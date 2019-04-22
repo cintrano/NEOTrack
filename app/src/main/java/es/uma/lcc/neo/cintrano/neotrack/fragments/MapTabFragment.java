@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -245,6 +246,12 @@ public class MapTabFragment extends Fragment implements View.OnClickListener, On
                         .icon(BitmapDescriptorFactory
                                 .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 ));
+                double radiusInMeters = 20.0;
+                int strokeColor = 0x0000ffff55; //blue outline
+                int shadeColor = 0x000044ff55; //blue fill
+
+                CircleOptions circleOptions = new CircleOptions().center(coordinates).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(8);
+                map.addCircle(circleOptions);
                 break;
             default: Log.e("MAP", "Marker type is not valid");
         }

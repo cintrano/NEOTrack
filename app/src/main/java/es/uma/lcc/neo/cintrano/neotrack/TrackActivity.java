@@ -46,6 +46,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
@@ -996,15 +997,15 @@ public class TrackActivity extends AppCompatActivity {
     }
 
     public void recordAudio(View view) {
+        mStartRecording = !mStartRecording;
         onRecord(mStartRecording);
         if (mStartRecording) {
-            Toast.makeText(TrackActivity.this, "STOP Grabación", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TrackActivity.this, "START Grabación", Toast.LENGTH_SHORT).show();
             //setText("Stop recording");
         } else {
-            Toast.makeText(TrackActivity.this, "START Grabación", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TrackActivity.this, "STOP Grabación", Toast.LENGTH_SHORT).show();
             //setText("Start recording");
         }
-        mStartRecording = !mStartRecording;
     }
 
     private void onRecord(boolean start) {
